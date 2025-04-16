@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot - NexAura</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Playpen+Sans:wght@500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        body {
+            font-family: 'Playpen Sans', cursive;
+            background: linear-gradient(-45deg, #a18cd1, #fbc2eb, #fbc2eb, #a18cd1);
+            background-size: 400% 400%;
+            animation: bgFlow 12s ease infinite;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        @keyframes bgFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes messageFade {
+            0% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInLeft {
+            0% {
+                transform: translateX(-30px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight {
+            0% {
+                transform: translateX(30px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .chat-container {
+            width: 90%;
+            max-width: 420px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 80%;
+            animation: popIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: #4F46E5;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-10px);
+            animation: fadeIn 0.6s ease forwards 0.2s, slideInDown 0.6s ease forwards 0.2s;
+        }
+
+        @keyframes slideInDown {
+            0% {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: #a18cd1 #f3f4f6;
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background-color: #a18cd1;
+            border-radius: 3px;
+        }
+
+        .messages::-webkit-scrollbar-track {
+            background-color: #f3f4f6;
+            border-radius: 3px;
+        }
+
+        .message {
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            max-width: 80%;
+            opacity: 0;
+        }
+
+        .bot-message {
+            background-color: #e0e7ff;
+            text-align: left;
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+            animation: messageFade 0.5s ease-out forwards, slideInLeft 0.5s ease-out forwards;
+            transform: translateX(-10px);
+        }
+
+        .user-message {
+            background-color: #4F46E5;
+            color: white;
+            text-align: right;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+            animation: messageFade 0.5s ease-out forwards, slideInRight 0.5s ease-out forwards;
+            transform: translateX(10px);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.6s ease forwards 0.4s, slideInUp 0.6s ease forwards 0.4s;
+        }
+
+        @keyframes slideInUp {
+            0% {
+                transform: translateY(10px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .input-box {
+            flex-grow: 1;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .input-box:focus {
+            outline: none;
+            border-color: #C084FC;
+            box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.4);
+            transform: scale(1.02);
+        }
+
+        .send-button {
+            padding: 10px 16px;
+            border-radius: 8px;
+            background-color: #4F46E5;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            background-color: #6D28D9;
+            transform: scale(1.08);
+            box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-container">
+        <h2 class="text-center text-2xl font-bold mb-2">Chat with NexAura</h2>
+        <div class="messages" id="messages"></div>
+        <div class="input-container">
+            <input type="text" id="user-input" class="input-box" placeholder="Type a message..." />
+            <button onclick="sendMessage()" class="send-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const messages = document.getElementById('messages');
+        const userInput = document.getElementById('user-input');
+
+        const sendMessage = () => {
+            const userMessage = userInput.value.trim();
+            if (!userMessage) return;
+
+            addMessage(userMessage, 'user-message');
+
+            setTimeout(() => {
+                addMessage("I am here to assist you! How can I help?", 'bot-message');
+            }, 800);
+
+            userInput.value = '';
+        };
+
+        const addMessage = (text, type) => {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${type}`;
+            msgDiv.textContent = text;
+            messages.appendChild(msgDiv);
+            // Trigger reflow to enable transition
+            void msgDiv.offsetWidth;
+            msgDiv.style.opacity = 1;
+            msgDiv.style.transform = 'translateX(0)';
+            messages.scrollTop = messages.scrollHeight;
+        };
+
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Initial animation for messages container
+        const chatContainer = document.querySelector('.chat-container');
+        chatContainer.style.transformOrigin = 'top center';
+
+        // Subtle animation for the send button icon
+        const sendButtonIcon = document.querySelector('.send-button i');
+        sendButtonIcon.style.transition = 'transform 0.3s ease-in-out';
+        const originalScale = 1;
+        const hoverScale = 1.2;
+
+        const animateSendButtonIcon = () => {
+            sendButtonIcon.style.transform = `scale(${hoverScale})`;
+            setTimeout(() => {
+                sendButtonIcon.style.transform = `scale(${originalScale})`;
+            }, 200);
+        };
+
+        document.querySelector('.send-button').addEventListener('click', animateSendButtonIcon);
+        userInput.addEventListener('focus', () => {
+            userInput.style.borderColor = '#8c24a0';
+            userInput.style.boxShadow = '0 0 0 3px rgba(140, 36, 160, 0.4)';
+        });
+        userInput.addEventListener('blur', () => {
+            userInput.style.borderColor = '#e5e7eb';
+            userInput.style.boxShadow = 'none';
+        });
+    </script>
+</body>
+
+</html>
